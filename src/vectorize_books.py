@@ -7,6 +7,8 @@ from langchain_chroma import Chroma
 
 load_dotenv()
 
+EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
+
 working_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(working_dir)
 data_dir = f"{parent_dir}/data"
@@ -14,7 +16,13 @@ vector_db_dir = f"{parent_dir}/vector_db"
 chapters_vector_db_dir = f"{parent_dir}/chapters_vector_db"
 
 
-embedding = HuggingFaceEmbeddings()
+embedding = HuggingFaceEmbeddings(
+    model=EMBEDDING_MODEL,
+    model_kwargs={
+        "device": os.getenv("DEVICE", "cpu"),
+        "model_kwargs": {"low_cpu_mem_usage": False},
+    },
+)
 text_splitter = CharacterTextSplitter(chunk_size=2000, chunk_overlap=500)
 
 
